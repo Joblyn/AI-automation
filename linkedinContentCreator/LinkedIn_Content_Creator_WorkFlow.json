@@ -1,0 +1,277 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "# LinkedIn Content Creator Workflow",
+        "height": 80,
+        "width": 656
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        208,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "d3f0a357-1b72-4a79-bcfc-89eca6922331",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        128
+      ],
+      "id": "ad2b2abb-21b4-4c75-a7fb-03d14fa61c51",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Article 1: {{ $json.results[0].content }}\nArticle 2: {{ $json.results[1].content }}\nArticle 3: {{ $json.results[2].content }}",
+        "options": {
+          "systemMessage": "# Overview  \nYou are an AI agent responsible for generating concise, professional LinkedIn posts tailored for entrepreneurs. Your primary input will be 3 articles, and your goal is to synthesize the core insights into a single inspiring LinkedIn post.  \n\n## Context  \n- The target audience is entrepreneurs seeking insight, motivation, or valuable takeaways from current trends, strategies, or innovations.  \n- The tone should be concise, forward-thinking, and empowering.  \n- Each post should reflect professionalism while remaining engaging and relatable.  \n\n## Instructions  \n1. Read and analyze the 3 input articles for key trends, insights, or actionable ideas.  \n2. Extract a unifying message or theme that entrepreneurs would find inspiring or valuable.  \n3. Write a concise LinkedIn post (max 2 short paragraphs) that:  \n   - Summarizes the key insight or idea.  \n   - Encourages reflection, action, or conversation.  \n   - Maintains a motivational tone.  \n4. Include 2–4 relevant and popular hashtags for entrepreneur audiences.  \n5. Add 1–2 fitting emojis to enhance tone, without overwhelming the message.  \n\n## Tools  \n- Input: 3 text articles  \n- Output: 1 LinkedIn post (text only, no media)  \n\n## Examples  \n- **Input**: Articles on remote team productivity, emerging AI tools, and mental resilience.  \n- **Output**:  \n  \"In today’s fast-paced world, the real edge isn’t just tech—it’s mindset.  \n  From AI breakthroughs to remote team dynamics, the future belongs to entrepreneurs who can stay adaptable, curious, and resilient. 💡  \n\n  Let’s build smarter, lead boldly, and grow intentionally.  \n  #EntrepreneurMindset #Leadership #AI #RemoteWork\"  \n\n## SOP (Standard Operating Procedure)  \n1. Read and summarize each article in 1–2 sentences.  \n2. Identify a common theme or connecting insight.  \n3. Craft a post using that theme as the focal point.  \n4. Add 2–4 relevant hashtags and 1–2 well-placed emojis.  \n5. Review for tone, clarity, and length before final output.  \n\n## Final Notes  \n- Avoid overly technical language unless necessary.  \n- Keep the focus on value, vision, and takeaways.  \n- Maintain a balance between inspiration and practicality.  \n---\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        512,
+        128
+      ],
+      "id": "60d6df0d-37b9-4be3-9eda-6a4cf814629e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        384,
+        336
+      ],
+      "id": "1d862a62-1d12-46bb-9ebf-3dde3bf51840",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1C2UikHCHK0SNZN1oraQJW1SRQQ6lGfzNOPabKXhq8Ro",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1C2UikHCHK0SNZN1oraQJW1SRQQ6lGfzNOPabKXhq8Ro/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1C2UikHCHK0SNZN1oraQJW1SRQQ6lGfzNOPabKXhq8Ro/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Topic": "={{ $('Get Topic').item.json.Topic }}",
+            "Status": "Created",
+            "Content": "={{ $json.output }}"
+          },
+          "matchingColumns": [
+            "Topic"
+          ],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        864,
+        128
+      ],
+      "id": "7a4ab9e1-b688-4a0f-a77b-bf71109c4f0a",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Q99InckxnnebxpW9",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1C2UikHCHK0SNZN1oraQJW1SRQQ6lGfzNOPabKXhq8Ro",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1C2UikHCHK0SNZN1oraQJW1SRQQ6lGfzNOPabKXhq8Ro/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1C2UikHCHK0SNZN1oraQJW1SRQQ6lGfzNOPabKXhq8Ro/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "To Do"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        96,
+        128
+      ],
+      "id": "ef8dcfde-f8d1-4236-9339-4e46cc513687",
+      "name": "Get Topic"
+    },
+    {
+      "parameters": {
+        "query": "=Search the web for {{ $json.Topic }}",
+        "options": {
+          "max_results": 3,
+          "include_images": true
+        }
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavily",
+      "typeVersion": 1,
+      "position": [
+        304,
+        128
+      ],
+      "id": "a2fcc9a9-03da-4d59-957d-9663101c40c6",
+      "name": "Search"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Topic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Topic": {
+      "main": [
+        [
+          {
+            "node": "Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "24e7bd9e-ec38-4597-927d-23f1b9414b44",
+  "meta": {
+    "instanceId": "843ea3dd4dc1de0df259599e927ad22109e4aa87ecc11ea2168b922cbbdaefab"
+  },
+  "id": "rxOGMlpCEtiR7wcm",
+  "tags": []
+}
